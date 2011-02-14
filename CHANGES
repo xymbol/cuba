@@ -1,0 +1,8 @@
+= 1.0.0 / 2011-02-15
+
+  * The only matchers which publish a block parameter are now #number, #segment,
+   #extension, #path and #param.
+
+  * The #extension matcher now works like a path matcher and yields the filename.
+
+  * Removed #any, #also, #method, #check, #puts and #print.
