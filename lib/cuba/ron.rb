@@ -117,7 +117,7 @@ module Cuba
 
         # At this point, we've successfully matched with some corresponding
         # matcher, so we can skip all other matchers defined.
-        @matched = true
+        @matched = true if !@res.empty? || @res["Location"]
       end
     end
 

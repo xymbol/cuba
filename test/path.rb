@@ -85,3 +85,25 @@ test "matching the root" do |env|
 
   assert_equal ["Home"], resp.body
 end
+
+test "two level inlined paths one after another" do |env|
+  Cuba.define do
+    on "a" do
+      on "b" do
+        res.write "a"
+        res.write "b"
+      end
+    end
+
+    on "a/c" do
+      res.write "a"
+      res.write "c"
+    end
+  end
+
+  env["PATH_INFO"] = "/a/c"
+
+  _, _, resp = Cuba.call(env)
+
+  assert_equal ["a", "c"], resp.body
+end
