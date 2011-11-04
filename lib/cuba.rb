@@ -1,5 +1,4 @@
 require "rack"
-require "tilt"
 require "cuba/version"
 
 class Rack::Response
@@ -92,28 +91,6 @@ class Cuba
     Thread.current[:_cache] ||= Tilt::Cache.new
   end
   private :_cache
-
-  # Render any type of template file supported by Tilt.
-  #
-  # @example
-  #
-  #   # Renders home, and is assumed to be HAML.
-  #   render("home.haml")
-  #
-  #   # Renders with some local variables
-  #   render("home.haml", site_name: "My Site")
-  #
-  #   # Renders with HAML options
-  #   render("home.haml", {}, ugly: true, format: :html5)
-  #
-  #   # Renders in layout
-  #   render("layout.haml") { render("home.haml") }
-  #
-  def render(template, locals = {}, options = {}, &block)
-    _cache.fetch(template, locals) {
-      Tilt.new(template, 1, options)
-    }.render(self, locals, &block)
-  end
 
   # The heart of the path / verb / any condition matching.
   #
