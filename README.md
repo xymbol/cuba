@@ -193,10 +193,14 @@ on env["REQUEST_METHOD"] == "GET", "api" do ... end
 on req.get?, "api" do ... end
 
 on get, "api" do ... end
+
+on get("api") do ... end
 ```
 
-Actually, `get` is syntax sugar for `req.get?`, which in turn is syntax sugar
-for `env["REQUEST_METHOD"] == "GET"`.
+Actually, each example ultimately calls `env["REQUEST_METHOD"] ==
+"GET"`. Note that in the last case, the two matchers (for the HTTP
+verb and the path) are condensed in a single matcher. This is just
+syntax sugar for the previous example.
 
 Captures
 --------

@@ -290,15 +290,34 @@ class Cuba
   # Syntatic sugar for providing HTTP Verb matching.
   #
   # @example
+  #   on get do
+  #   end
+  #
   #   on get, "signup" do
   #   end
   #
-  #   on post, "signup" do
+  #   on get("signup") do
   #   end
-  def get;    req.get?    end
-  def post;   req.post?   end
-  def put;    req.put?    end
-  def delete; req.delete? end
+  def get(path = nil)
+    request_method("GET", path)
+  end
+
+  def post(path = nil)
+    request_method("POST", path)
+  end
+
+  def put(path = nil)
+    request_method("PUT", path)
+  end
+
+  def delete(path = nil)
+    request_method("DELETE", path)
+  end
+
+  # Match the HTTP verb with the REQUEST_METHOD.
+  def request_method(verb, path = nil)
+    env["REQUEST_METHOD"].eql?(verb) && path.nil? || match(path)
+  end
 
   # If you want to halt the processing of an existing handler
   # and continue it via a different handler.

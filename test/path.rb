@@ -84,3 +84,18 @@ test "matching the root" do |env|
 
   assert_response resp, ["Home"]
 end
+
+test "matching method and path" do |env|
+  Cuba.define do
+    on get("home") do
+      res.write "Home"
+    end
+  end
+
+  env = { "REQUEST_METHOD" => "GET", "PATH_INFO" => "/home",
+          "SCRIPT_NAME" => "/" }
+
+  _, _, resp = Cuba.call(env)
+
+  assert_response resp, ["Home"]
+end
