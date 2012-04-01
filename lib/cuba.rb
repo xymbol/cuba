@@ -316,7 +316,7 @@ class Cuba
 
   # Match the HTTP verb with the REQUEST_METHOD.
   def request_method(verb, path = nil)
-    env["REQUEST_METHOD"].eql?(verb) && path.nil? || match(path)
+    env["REQUEST_METHOD"].eql?(verb) && (path.nil? || match(path))
   end
 
   # If you want to halt the processing of an existing handler
