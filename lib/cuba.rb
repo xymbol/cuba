@@ -216,7 +216,7 @@ class Cuba
   private :try
 
   def consume(pattern)
-    matchdata = env[PATH_INFO].match(/\A\/(#{pattern})(\/|\z)/)
+    matchdata = env[PATH_INFO].match(pattern)
 
     return false unless matchdata
 
@@ -231,13 +231,27 @@ class Cuba
 
   def match(matcher, segment = SEGMENT)
     case matcher
-    when String then consume(matcher.gsub(/:\w+/, segment))
-    when Regexp then consume(matcher)
-    when Symbol then consume(segment)
+    when String then consume(self.class.cache(matcher) { matcher.gsub(/:\w+/, segment) })
+    when Regexp then consume(self.class.cache(matcher) { matcher })
+    when Symbol then consume(self.class.cache(segment) { segment })
     when Proc   then matcher.call
     else
       matcher
     end
+  end
+
+  def self.cache(o)
+    pattern = buffer[Thread.current.object_id][o]
+
+    unless pattern
+      pattern = buffer[Thread.current.object_id][o] = /\A\/(#{ yield })(\/|\z)/
+    end
+
+    pattern
+  end
+
+  def self.buffer
+    @cache ||= Hash.new { |h, k| h[k] = {} }
   end
 
   # A matcher for files with a certain extension.
@@ -248,7 +262,7 @@ class Cuba
   #     res.write file # writes app
   #   end
   def extension(ext = "\\w+")
-    lambda { consume("([^\\/]+?)\.#{ext}\\z") }
+    lambda { match("([^\\/]+?)\.#{ext}\\z") }
   end
 
   # Used to ensure that certain request parameters are present. Acts like a
